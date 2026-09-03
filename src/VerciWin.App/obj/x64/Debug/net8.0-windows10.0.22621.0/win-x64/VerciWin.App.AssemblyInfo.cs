@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Kinetic typography lyrics overlay for Windows")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c0a64445677d46393601e83091eec3bfc77ccc39")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41f003752ddc2ac207260e7cee54fe936811dea6")]
 [assembly: System.Reflection.AssemblyProductAttribute("VerciWin.App")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VerciWin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

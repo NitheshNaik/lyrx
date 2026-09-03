@@ -30,8 +30,6 @@ public partial class App : Application
     private TrayIconManager? _trayIconManager;
 
     private CancellationTokenSource? _currentTrackCts;
-    // Capture the main UI dispatcher so we can always jump back to the right thread
-    private Microsoft.UI.Dispatching.DispatcherQueue? _mainThreadDispatcher;
 
     public App()
     {
@@ -111,12 +109,46 @@ public partial class App : Application
         _serviceProvider = services.BuildServiceProvider();
     }
 
-    protected override async void OnLaunched(LaunchActivatedEventArgs args)
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        // Capture the main UI thread immediately
-        _mainThreadDispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-
         if (_serviceProvider == null) return;
+
+        var overlayViewModel = _serviceProvider.GetRequiredService<OverlayViewModel>();
+        var trayViewModel = _serviceProvider.GetRequiredService<TrayMenuViewModel>();
+        var mediaWatcher = _serviceProvider.GetRequiredService<MediaSessionWatcher>();
+
+        // 1. CREATE WINDOW SYNCHRONOUSLY FIRST (Fixes 0xc0000602 Crash)
+        _overlayWindow = new OverlayWindow(overlayViewModel, () => mediaWatcher.GetCurrentPosition());
+        _overlayWindow.Activate();
+
+        // 2. Initialize System Tray
+        _trayIconManager = _serviceProvider.GetRequiredService<TrayIconManager>();
+        _trayIconManager.Initialize();
+
+        // 3. Handle Tray menu events
+        trayViewModel.OpenSettingsRequested += (s, e) =>
+        {
+            if (_settingsWindow == null)
+            {
+                var settingsVm = _serviceProvider.GetRequiredService<SettingsViewModel>();
+                _settingsWindow = new SettingsWindow(settingsVm);
+                _settingsWindow.Closed += (sw, ea) => _settingsWindow = null;
+            }
+            _settingsWindow.Activate();
+        };
+
+        trayViewModel.ExitRequested += (s, e) =>
+        {
+            ExitApplication();
+        };
+
+        // 4. Kick off async initialization in the background
+        _ = InitializeAsync();
+    }
+
+    private async Task InitializeAsync()
+    {
+        if (_serviceProvider == null || _overlayWindow == null) return;
 
         var settingsStore = _serviceProvider.GetRequiredService<SettingsStore>();
         var overlayViewModel = _serviceProvider.GetRequiredService<OverlayViewModel>();
@@ -126,127 +158,75 @@ public partial class App : Application
         var paletteExtractor = _serviceProvider.GetRequiredService<PaletteExtractor>();
         var powerManager = _serviceProvider.GetRequiredService<ExecutionStateManager>();
 
-        // 1. Load user settings (This hops to a background thread)
+        // Load settings asynchronously
         var settings = await settingsStore.LoadAsync();
-        
-        // HOP BACK TO THE MAIN UI THREAD before creating UI components
-        _mainThreadDispatcher.TryEnqueue(async () =>
+
+        // Apply settings back on the UI thread
+        _overlayWindow.DispatcherQueue.TryEnqueue(() =>
         {
             overlayViewModel.Opacity = settings.Opacity;
             overlayViewModel.VisualStyle = settings.VisualStyle;
             overlayViewModel.IsOverlayMode = settings.IsOverlayMode;
             overlayViewModel.OverlayPosition = settings.OverlayPosition;
-
-            // 2. Wire GSMTC StateChanged events end-to-end
-            mediaWatcher.StateChanged += (sender, state) =>
-            {
-                // Cancel any in-flight lyric fetch from the previous track
-                _currentTrackCts?.Cancel();
-                _currentTrackCts?.Dispose();
-                _currentTrackCts = new CancellationTokenSource();
-                var ct = _currentTrackCts.Token;
-
-                // Update ViewModel state on UI thread
-                _mainThreadDispatcher.TryEnqueue(async () =>
-                {
-                    overlayViewModel.CurrentState = state;
-                    trayViewModel.UpdateTooltip(state);
-
-                    // Sleep prevention
-                    if (!state.IsPaused && !state.IsEmpty)
-                    {
-                        powerManager.Engage();
-                    }
-                    else
-                    {
-                        powerManager.Release();
-                    }
-
-                    if (state.IsEmpty)
-                    {
-                        overlayViewModel.CurrentLyrics = null;
-                        overlayViewModel.Palette = TypographyPalette.NeutralPalette;
-                        return;
-                    }
-
-                    // 3. Extract palette asynchronously (NeutralPalette returned if null art)
-                    try
-                    {
-                        var palette = await paletteExtractor.ExtractAsync(state.AlbumArtStream, ct);
-                        if (!ct.IsCancellationRequested)
-                        {
-                            overlayViewModel.Palette = palette;
-                        }
-                    }
-                    catch (OperationCanceledException) { /* New track started */ }
-
-                    // 4. Fetch lyrics asynchronously (Cache-first -> LRCLIB -> Interpolator)
-                    try
-                    {
-                        var lyrics = await lyricService.GetLyricsAsync(
-                            state.Title,
-                            state.Artist,
-                            state.Album,
-                            state.EndTime,
-                            ct);
-
-                        if (!ct.IsCancellationRequested)
-                        {
-                            overlayViewModel.CurrentLyrics = lyrics;
-                        }
-                    }
-                    catch (OperationCanceledException) { /* New track started */ }
-                });
-            };
-
-            // 3. Start GSMTC monitoring
-            await mediaWatcher.InitializeAsync();
-
-            // 4. Create and show the OverlayWindow (THIS IS NOW SAFELY ON THE UI THREAD)
-            _overlayWindow = new OverlayWindow(overlayViewModel, () => mediaWatcher.GetCurrentPosition());
-            _overlayWindow.Activate();
-
-            // 5. Initialize System Tray
-            _trayIconManager = _serviceProvider.GetRequiredService<TrayIconManager>();
-            _trayIconManager.Initialize();
-
-            // 6. Handle Tray menu events
-            trayViewModel.OpenSettingsRequested += (s, e) =>
-            {
-                if (_settingsWindow == null)
-                {
-                    var settingsVm = _serviceProvider.GetRequiredService<SettingsViewModel>();
-                    _settingsWindow = new SettingsWindow(settingsVm);
-                    _settingsWindow.Closed += (sw, ea) => _settingsWindow = null;
-                }
-                _settingsWindow.Activate();
-            };
-
-            trayViewModel.ExitRequested += (s, e) =>
-            {
-                ExitApplication();
-            };
         });
+
+        // Wire GSMTC StateChanged events
+        mediaWatcher.StateChanged += (sender, state) =>
+        {
+            _currentTrackCts?.Cancel();
+            _currentTrackCts?.Dispose();
+            _currentTrackCts = new CancellationTokenSource();
+            var ct = _currentTrackCts.Token;
+
+            _overlayWindow.DispatcherQueue.TryEnqueue(async () =>
+            {
+                overlayViewModel.CurrentState = state;
+                trayViewModel.UpdateTooltip(state);
+
+                // Sleep prevention
+                if (!state.IsPaused && !state.IsEmpty) powerManager.Engage();
+                else powerManager.Release();
+
+                if (state.IsEmpty)
+                {
+                    overlayViewModel.CurrentLyrics = null;
+                    overlayViewModel.Palette = TypographyPalette.NeutralPalette;
+                    return;
+                }
+
+                // Extract palette
+                try
+                {
+                    var palette = await paletteExtractor.ExtractAsync(state.AlbumArtStream, ct);
+                    if (!ct.IsCancellationRequested) overlayViewModel.Palette = palette;
+                }
+                catch (OperationCanceledException) { }
+
+                // Fetch lyrics
+                try
+                {
+                    var lyrics = await lyricService.GetLyricsAsync(
+                        state.Title, state.Artist, state.Album, state.EndTime, ct);
+
+                    if (!ct.IsCancellationRequested) overlayViewModel.CurrentLyrics = lyrics;
+                }
+                catch (OperationCanceledException) { }
+            });
+        };
+
+        // Start GSMTC monitoring
+        await mediaWatcher.InitializeAsync();
     }
 
     private void ExitApplication()
     {
         _currentTrackCts?.Cancel();
-
-        // Release power execution state hold
         _serviceProvider?.GetService<ExecutionStateManager>()?.Dispose();
-
-        // Stop media watcher
         _serviceProvider?.GetService<MediaSessionWatcher>()?.Dispose();
-
-        // Dispose tray icon
         _trayIconManager?.Dispose();
-
-        // Close windows
         _settingsWindow?.Close();
         _overlayWindow?.CloseWindow();
 
-        // Release mutex
         if (_singleInstanceMutex != null)
         {
             try { _singleInstanceMutex.ReleaseMutex(); } catch { }
