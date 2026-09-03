@@ -1,10 +1,4 @@
 D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\bin\x64\Debug\net8.0-windows10.0.22621.0\.msCoverageSourceRootsMapping_VerciWin.Core.Tests
-D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.csproj.AssemblyReference.cache
-D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.GeneratedMSBuildEditorConfig.editorconfig
-D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.AssemblyInfoInputs.cache
-D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.AssemblyInfo.cs
-D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.csproj.CoreCompileInputs.cache
-D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.sourcelink.json
 D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\bin\x64\Debug\net8.0-windows10.0.22621.0\testhost.dll
 D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\bin\x64\Debug\net8.0-windows10.0.22621.0\testhost.exe
 D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\bin\x64\Debug\net8.0-windows10.0.22621.0\xunit.runner.visualstudio.testadapter.dll
@@ -109,6 +103,12 @@ D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\bin\x64\Debug\net8
 D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\bin\x64\Debug\net8.0-windows10.0.22621.0\WinRT.Runtime.dll
 D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\bin\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.dll
 D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\bin\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.pdb
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.csproj.AssemblyReference.cache
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.GeneratedMSBuildEditorConfig.editorconfig
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.AssemblyInfoInputs.cache
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.AssemblyInfo.cs
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.csproj.CoreCompileInputs.cache
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.sourcelink.json
 D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.3D2DF596.Up2Date
 D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.dll
 D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\refint\VerciWin.Core.Tests.dll
