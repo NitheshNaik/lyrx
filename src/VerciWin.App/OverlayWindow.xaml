@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="VerciWin.App.OverlayWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:canvas="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    SystemBackdrop="{x:Null}"
+    Title="VerciWin Overlay">
+
+    <Grid Background="Transparent">
+        <!-- Win2D Canvas for GPU-accelerated kinetic typography and per-pixel glow -->
+        <canvas:CanvasControl
+            x:Name="LyricCanvas"
+            ClearColor="Transparent"
+            Draw="LyricCanvas_Draw"
+            CreateResources="LyricCanvas_CreateResources" />
+    </Grid>
+</Window>
