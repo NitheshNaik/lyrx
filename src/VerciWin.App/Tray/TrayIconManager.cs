@@ -90,10 +90,10 @@ public sealed class TrayIconManager : IDisposable
         _taskbarIcon.ContextFlyout = contextMenu;
 
         // Double click to toggle settings
-        _taskbarIcon.LeftClick += (s, e) =>
-        {
-            // Left click can open settings or toggle mode
-        };
+        // _taskbarIcon.LeftClick += (s, e) =>
+        // {
+        //     // Left click can open settings or toggle mode
+        // };
 
         _viewModel.PropertyChanged += (s, e) =>
         {

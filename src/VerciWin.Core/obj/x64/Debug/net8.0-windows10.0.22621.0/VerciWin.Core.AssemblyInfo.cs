@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VerciWin.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5b79f6ff7caef29f8993c55ec19d887675ae4bd2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c0a64445677d46393601e83091eec3bfc77ccc39")]
 [assembly: System.Reflection.AssemblyProductAttribute("VerciWin.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VerciWin.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

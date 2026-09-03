@@ -85,7 +85,7 @@ public sealed partial class OverlayWindow : Window
 
             _appWindow.Changed += (s, e) =>
             {
-                if (e.DidDisplayChange || e.DidPositionChange)
+                if (e.DidSizeChange || e.DidPositionChange)
                 {
                     PositionOverlayWindow();
                 }

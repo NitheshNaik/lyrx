@@ -30,6 +30,8 @@ public partial class App : Application
     private TrayIconManager? _trayIconManager;
 
     private CancellationTokenSource? _currentTrackCts;
+    // Capture the main UI dispatcher so we can always jump back to the right thread
+    private Microsoft.UI.Dispatching.DispatcherQueue? _mainThreadDispatcher;
 
     public App()
     {
@@ -111,6 +113,9 @@ public partial class App : Application
 
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
+        // Capture the main UI thread immediately
+        _mainThreadDispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
         if (_serviceProvider == null) return;
 
         var settingsStore = _serviceProvider.GetRequiredService<SettingsStore>();
@@ -121,102 +126,107 @@ public partial class App : Application
         var paletteExtractor = _serviceProvider.GetRequiredService<PaletteExtractor>();
         var powerManager = _serviceProvider.GetRequiredService<ExecutionStateManager>();
 
-        // 1. Load user settings
+        // 1. Load user settings (This hops to a background thread)
         var settings = await settingsStore.LoadAsync();
-        overlayViewModel.Opacity = settings.Opacity;
-        overlayViewModel.VisualStyle = settings.VisualStyle;
-        overlayViewModel.IsOverlayMode = settings.IsOverlayMode;
-        overlayViewModel.OverlayPosition = settings.OverlayPosition;
-
-        // 2. Wire GSMTC StateChanged events end-to-end
-        mediaWatcher.StateChanged += (sender, state) =>
+        
+        // HOP BACK TO THE MAIN UI THREAD before creating UI components
+        _mainThreadDispatcher.TryEnqueue(async () =>
         {
-            // Cancel any in-flight lyric fetch from the previous track
-            _currentTrackCts?.Cancel();
-            _currentTrackCts?.Dispose();
-            _currentTrackCts = new CancellationTokenSource();
-            var ct = _currentTrackCts.Token;
+            overlayViewModel.Opacity = settings.Opacity;
+            overlayViewModel.VisualStyle = settings.VisualStyle;
+            overlayViewModel.IsOverlayMode = settings.IsOverlayMode;
+            overlayViewModel.OverlayPosition = settings.OverlayPosition;
 
-            // Update ViewModel state on UI thread
-            _overlayWindow?.DispatcherQueue.TryEnqueue(async () =>
+            // 2. Wire GSMTC StateChanged events end-to-end
+            mediaWatcher.StateChanged += (sender, state) =>
             {
-                overlayViewModel.CurrentState = state;
-                trayViewModel.UpdateTooltip(state);
+                // Cancel any in-flight lyric fetch from the previous track
+                _currentTrackCts?.Cancel();
+                _currentTrackCts?.Dispose();
+                _currentTrackCts = new CancellationTokenSource();
+                var ct = _currentTrackCts.Token;
 
-                // Sleep prevention
-                if (!state.IsPaused && !state.IsEmpty)
+                // Update ViewModel state on UI thread
+                _mainThreadDispatcher.TryEnqueue(async () =>
                 {
-                    powerManager.Engage();
-                }
-                else
-                {
-                    powerManager.Release();
-                }
+                    overlayViewModel.CurrentState = state;
+                    trayViewModel.UpdateTooltip(state);
 
-                if (state.IsEmpty)
-                {
-                    overlayViewModel.CurrentLyrics = null;
-                    overlayViewModel.Palette = TypographyPalette.NeutralPalette;
-                    return;
-                }
-
-                // 3. Extract palette asynchronously (NeutralPalette returned if null art)
-                try
-                {
-                    var palette = await paletteExtractor.ExtractAsync(state.AlbumArtStream, ct);
-                    if (!ct.IsCancellationRequested)
+                    // Sleep prevention
+                    if (!state.IsPaused && !state.IsEmpty)
                     {
-                        overlayViewModel.Palette = palette;
+                        powerManager.Engage();
                     }
-                }
-                catch (OperationCanceledException) { /* New track started */ }
-
-                // 4. Fetch lyrics asynchronously (Cache-first -> LRCLIB -> Interpolator)
-                try
-                {
-                    var lyrics = await lyricService.GetLyricsAsync(
-                        state.Title,
-                        state.Artist,
-                        state.Album,
-                        state.EndTime,
-                        ct);
-
-                    if (!ct.IsCancellationRequested)
+                    else
                     {
-                        overlayViewModel.CurrentLyrics = lyrics;
+                        powerManager.Release();
                     }
-                }
-                catch (OperationCanceledException) { /* New track started */ }
-            });
-        };
 
-        // 3. Start GSMTC monitoring
-        await mediaWatcher.InitializeAsync();
+                    if (state.IsEmpty)
+                    {
+                        overlayViewModel.CurrentLyrics = null;
+                        overlayViewModel.Palette = TypographyPalette.NeutralPalette;
+                        return;
+                    }
 
-        // 4. Create and show the OverlayWindow
-        _overlayWindow = new OverlayWindow(overlayViewModel, () => mediaWatcher.GetCurrentPosition());
-        _overlayWindow.Activate();
+                    // 3. Extract palette asynchronously (NeutralPalette returned if null art)
+                    try
+                    {
+                        var palette = await paletteExtractor.ExtractAsync(state.AlbumArtStream, ct);
+                        if (!ct.IsCancellationRequested)
+                        {
+                            overlayViewModel.Palette = palette;
+                        }
+                    }
+                    catch (OperationCanceledException) { /* New track started */ }
 
-        // 5. Initialize System Tray
-        _trayIconManager = _serviceProvider.GetRequiredService<TrayIconManager>();
-        _trayIconManager.Initialize();
+                    // 4. Fetch lyrics asynchronously (Cache-first -> LRCLIB -> Interpolator)
+                    try
+                    {
+                        var lyrics = await lyricService.GetLyricsAsync(
+                            state.Title,
+                            state.Artist,
+                            state.Album,
+                            state.EndTime,
+                            ct);
 
-        // 6. Handle Tray menu events
-        trayViewModel.OpenSettingsRequested += (s, e) =>
-        {
-            if (_settingsWindow == null)
+                        if (!ct.IsCancellationRequested)
+                        {
+                            overlayViewModel.CurrentLyrics = lyrics;
+                        }
+                    }
+                    catch (OperationCanceledException) { /* New track started */ }
+                });
+            };
+
+            // 3. Start GSMTC monitoring
+            await mediaWatcher.InitializeAsync();
+
+            // 4. Create and show the OverlayWindow (THIS IS NOW SAFELY ON THE UI THREAD)
+            _overlayWindow = new OverlayWindow(overlayViewModel, () => mediaWatcher.GetCurrentPosition());
+            _overlayWindow.Activate();
+
+            // 5. Initialize System Tray
+            _trayIconManager = _serviceProvider.GetRequiredService<TrayIconManager>();
+            _trayIconManager.Initialize();
+
+            // 6. Handle Tray menu events
+            trayViewModel.OpenSettingsRequested += (s, e) =>
             {
-                var settingsVm = _serviceProvider.GetRequiredService<SettingsViewModel>();
-                _settingsWindow = new SettingsWindow(settingsVm);
-                _settingsWindow.Closed += (sw, ea) => _settingsWindow = null;
-            }
-            _settingsWindow.Activate();
-        };
+                if (_settingsWindow == null)
+                {
+                    var settingsVm = _serviceProvider.GetRequiredService<SettingsViewModel>();
+                    _settingsWindow = new SettingsWindow(settingsVm);
+                    _settingsWindow.Closed += (sw, ea) => _settingsWindow = null;
+                }
+                _settingsWindow.Activate();
+            };
 
-        trayViewModel.ExitRequested += (s, e) =>
-        {
-            ExitApplication();
-        };
+            trayViewModel.ExitRequested += (s, e) =>
+            {
+                ExitApplication();
+            };
+        });
     }
 
     private void ExitApplication()
