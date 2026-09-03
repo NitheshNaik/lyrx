@@ -9,6 +9,9 @@ using VerciWin.App.Interop;
 using VerciWin.App.Rendering;
 using VerciWin.ViewModels;
 
+// Alias to resolve the CS0104 naming conflict
+using NativeWin32 = VerciWin.App.Interop.Win32Interop;
+
 namespace VerciWin.App;
 
 /// <summary>
@@ -22,7 +25,7 @@ public sealed partial class OverlayWindow : Window
 
     private IntPtr _hwnd = IntPtr.Zero;
     private AppWindow? _appWindow;
-    private Win32Interop.SubclassProc? _subclassProc;
+    private NativeWin32.SubclassProc? _subclassProc;
     private bool _isSubclassed;
 
     public OverlayWindow(OverlayViewModel viewModel, Func<TimeSpan> positionProvider)
@@ -90,20 +93,20 @@ public sealed partial class OverlayWindow : Window
         }
 
         // Subclass window for WM_NCHITTEST click-through filtering
-        _subclassProc = new Win32Interop.SubclassProc(WindowSubclassProc);
-        _isSubclassed = Win32Interop.SetWindowSubclass(_hwnd, _subclassProc, 1, 0);
+        _subclassProc = new NativeWin32.SubclassProc(WindowSubclassProc);
+        _isSubclassed = NativeWin32.SetWindowSubclass(_hwnd, _subclassProc, 1, 0);
 
         // Set DWM corner preference (sharp edges for seamless borderless overlay)
         int cornerPref = ExtendedWindowStyles.DWMWCP_DONOTROUND;
-        Win32Interop.DwmSetWindowAttribute(
+        NativeWin32.DwmSetWindowAttribute(
             _hwnd,
             ExtendedWindowStyles.DWMWA_WINDOW_CORNER_PREFERENCE,
             ref cornerPref,
             sizeof(int));
 
         // Extend DWM frame for true transparent backdrop
-        var margins = Win32Interop.MARGINS.FullWindow;
-        Win32Interop.DwmExtendFrameIntoClientArea(_hwnd, ref margins);
+        var margins = NativeWin32.MARGINS.FullWindow;
+        NativeWin32.DwmExtendFrameIntoClientArea(_hwnd, ref margins);
 
         // Apply initial overlay styling and positioning
         ApplyOverlayMode();
@@ -117,17 +120,17 @@ public sealed partial class OverlayWindow : Window
     {
         if (_hwnd == IntPtr.Zero) return;
 
-        nint exStyle = Win32Interop.GetWindowLongPtr(_hwnd, ExtendedWindowStyles.GWL_EXSTYLE);
+        nint exStyle = NativeWin32.GetWindowLongPtr(_hwnd, ExtendedWindowStyles.GWL_EXSTYLE);
 
         // Overlay Mode: Click-through (WS_EX_TRANSPARENT), ToolWindow (no taskbar icon), NoRedirectionBitmap for DirectComposition alpha
         exStyle |= (nint)(ExtendedWindowStyles.WS_EX_NOREDIRECTIONBITMAP |
                           ExtendedWindowStyles.WS_EX_TRANSPARENT |
                           ExtendedWindowStyles.WS_EX_TOOLWINDOW);
 
-        Win32Interop.SetWindowLongPtr(_hwnd, ExtendedWindowStyles.GWL_EXSTYLE, exStyle);
+        NativeWin32.SetWindowLongPtr(_hwnd, ExtendedWindowStyles.GWL_EXSTYLE, exStyle);
 
         // Always On Top
-        Win32Interop.SetWindowPos(
+        NativeWin32.SetWindowPos(
             _hwnd,
             ExtendedWindowStyles.HWND_TOPMOST,
             0, 0, 0, 0,
@@ -138,16 +141,16 @@ public sealed partial class OverlayWindow : Window
     {
         if (_hwnd == IntPtr.Zero) return;
 
-        nint exStyle = Win32Interop.GetWindowLongPtr(_hwnd, ExtendedWindowStyles.GWL_EXSTYLE);
+        nint exStyle = NativeWin32.GetWindowLongPtr(_hwnd, ExtendedWindowStyles.GWL_EXSTYLE);
 
         // Normal/Interactive Mode: Remove click-through style so user can interact/move
         exStyle &= ~(nint)ExtendedWindowStyles.WS_EX_TRANSPARENT;
         exStyle &= ~(nint)ExtendedWindowStyles.WS_EX_TOOLWINDOW;
 
-        Win32Interop.SetWindowLongPtr(_hwnd, ExtendedWindowStyles.GWL_EXSTYLE, exStyle);
+        NativeWin32.SetWindowLongPtr(_hwnd, ExtendedWindowStyles.GWL_EXSTYLE, exStyle);
 
         // Place below topmost windows
-        Win32Interop.SetWindowPos(
+        NativeWin32.SetWindowPos(
             _hwnd,
             ExtendedWindowStyles.HWND_NOTOPMOST,
             0, 0, 0, 0,
@@ -158,13 +161,13 @@ public sealed partial class OverlayWindow : Window
     {
         if (_hwnd == IntPtr.Zero) return;
 
-        IntPtr hMonitor = Win32Interop.MonitorFromWindow(_hwnd, ExtendedWindowStyles.MONITOR_DEFAULTTONEAREST);
-        var monitorInfo = new Win32Interop.MONITORINFO
+        IntPtr hMonitor = NativeWin32.MonitorFromWindow(_hwnd, ExtendedWindowStyles.MONITOR_DEFAULTTONEAREST);
+        var monitorInfo = new NativeWin32.MONITORINFO
         {
-            cbSize = (uint)Marshal.SizeOf<Win32Interop.MONITORINFO>()
+            cbSize = (uint)Marshal.SizeOf<NativeWin32.MONITORINFO>()
         };
 
-        if (!Win32Interop.GetMonitorInfo(hMonitor, ref monitorInfo))
+        if (!NativeWin32.GetMonitorInfo(hMonitor, ref monitorInfo))
             return;
 
         var workArea = monitorInfo.rcWork;
@@ -196,7 +199,7 @@ public sealed partial class OverlayWindow : Window
                 break;
         }
 
-        Win32Interop.MoveWindow(_hwnd, overlayX, overlayY, overlayWidth, overlayHeight, bRepaint: true);
+        NativeWin32.MoveWindow(_hwnd, overlayX, overlayY, overlayWidth, overlayHeight, bRepaint: true);
     }
 
     private nint WindowSubclassProc(IntPtr hWnd, uint uMsg, nuint wParam, nint lParam, nuint uIdSubclass, nuint dwRefData)
@@ -214,7 +217,7 @@ public sealed partial class OverlayWindow : Window
             PositionOverlayWindow();
         }
 
-        return Win32Interop.DefSubclassProc(hWnd, uMsg, wParam, lParam);
+        return NativeWin32.DefSubclassProc(hWnd, uMsg, wParam, lParam);
     }
 
     // ── Win2D Canvas Handlers ────────────────────────────────────────────────
@@ -235,7 +238,7 @@ public sealed partial class OverlayWindow : Window
         _renderer.Dispose();
         if (_isSubclassed && _hwnd != IntPtr.Zero && _subclassProc != null)
         {
-            Win32Interop.RemoveWindowSubclass(_hwnd, _subclassProc, 1);
+            NativeWin32.RemoveWindowSubclass(_hwnd, _subclassProc, 1);
             _isSubclassed = false;
         }
         this.Close();

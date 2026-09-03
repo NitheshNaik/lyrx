@@ -18,8 +18,8 @@ public sealed class LrcParserTests
         var doc = _sut.Parse(lrc);
 
         Assert.Equal(2, doc.Lines.Count);
-        Assert.Equal(TimeSpan.FromSeconds(7.13), doc.Lines[0].Start, precision: 2);
-        Assert.Equal(TimeSpan.FromSeconds(14.77), doc.Lines[1].Start, precision: 2);
+        Assert.Equal(TimeSpan.FromSeconds(7.13), doc.Lines[0].Start);
+        Assert.Equal(TimeSpan.FromSeconds(14.77), doc.Lines[1].Start);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public sealed class LrcParserTests
     public void ParsesThreeDigitMilliseconds()
     {
         var doc = _sut.Parse("[00:07.130] Three digit ms");
-        Assert.Equal(TimeSpan.FromSeconds(7.130), doc.Lines[0].Start, precision: 2);
+        Assert.Equal(TimeSpan.FromSeconds(7.130), doc.Lines[0].Start);
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public sealed class LrcParserTests
     {
         // Some LRC variants use comma instead of dot.
         var doc = _sut.Parse("[01:23,45] Comma variant");
-        Assert.Equal(TimeSpan.FromSeconds(83.45), doc.Lines[0].Start, precision: 2);
+        Assert.Equal(TimeSpan.FromSeconds(83.45), doc.Lines[0].Start);
     }
 
     [Fact]
@@ -128,8 +128,8 @@ public sealed class LrcParserTests
         var doc = _sut.Parse(lrc);
         var words = doc.Lines[0].Words;
 
-        Assert.Equal(TimeSpan.FromSeconds(60.00), words[0].Start, precision: 2);
-        Assert.Equal(TimeSpan.FromSeconds(60.80), words[1].Start, precision: 2);
+        Assert.Equal(TimeSpan.FromSeconds(60.00), words[0].Start);
+        Assert.Equal(TimeSpan.FromSeconds(60.80), words[1].Start);
     }
 
     [Fact]
@@ -155,11 +155,4 @@ public sealed class LrcParserTests
         Assert.All(doc.Lines, l => Assert.Equal(TimeSpan.Zero, l.Start));
         Assert.False(doc.IsWordLevel);
     }
-}
-
-// TimeSpan comparison helper extension used with Assert.Equal overload accepting precision
-public static class TimeSpanExtensions
-{
-    // xunit doesn't have built-in TimeSpan precision, so we use InRange in tests.
-    // This attribute extension is a placeholder to document the pattern.
 }

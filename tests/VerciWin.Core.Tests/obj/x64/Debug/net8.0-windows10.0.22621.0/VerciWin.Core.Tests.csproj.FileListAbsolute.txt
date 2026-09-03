@@ -1,0 +1,7 @@
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\bin\x64\Debug\net8.0-windows10.0.22621.0\.msCoverageSourceRootsMapping_VerciWin.Core.Tests
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.csproj.AssemblyReference.cache
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.GeneratedMSBuildEditorConfig.editorconfig
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.AssemblyInfoInputs.cache
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.AssemblyInfo.cs
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.csproj.CoreCompileInputs.cache
+D:\Downloads\myCodes\projects\verci\tests\VerciWin.Core.Tests\obj\x64\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.Tests.sourcelink.json

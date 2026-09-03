@@ -8,7 +8,7 @@ namespace VerciWin.Core.Media;
 /// All fields are value-typed or immutable — callers may cache this struct
 /// without worrying about concurrent mutation.
 /// </summary>
-public sealed class PlaybackState
+public sealed record PlaybackState
 {
     // ── Track metadata ───────────────────────────────────────────────────────
     public string Title { get; init; } = string.Empty;

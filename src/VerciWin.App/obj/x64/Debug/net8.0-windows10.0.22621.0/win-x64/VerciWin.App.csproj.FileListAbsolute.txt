@@ -1,0 +1,16 @@
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\VerciWin.App.csproj.AssemblyReference.cache
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\App.g.i.cs
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\App.g.cs
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\OverlayWindow.g.i.cs
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\OverlayWindow.g.cs
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\SettingsWindow.g.i.cs
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\SettingsWindow.g.cs
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\XamlTypeInfo.g.cs
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\App.xaml
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\OverlayWindow.xaml
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\SettingsWindow.xaml
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\App.xbf
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\OverlayWindow.xbf
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\SettingsWindow.xbf
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\XamlSaveStateFile.xml
+D:\Downloads\myCodes\projects\verci\src\VerciWin.App\obj\x64\Debug\net8.0-windows10.0.22621.0\win-x64\VerciWin.App.GeneratedMSBuildEditorConfig.editorconfig
