@@ -157,15 +157,15 @@ public sealed class PaletteExtractor
         var topVibrant = candidates[0];
 
         // Accent color is the most vibrant color
-        Color accent = Color.FromArgb(255, topVibrant.R, topVibrant.G, topVibrant.B);
+        Windows.UI.Color accent = Windows.UI.Color.FromArgb(255, topVibrant.R, topVibrant.G, topVibrant.B);
 
         // Primary text color: boosted lightness for readability, tinted with accent hue
         HslToRgb(topVibrant.H, Math.Min(topVibrant.S, 0.4), 0.92, out byte priR, out byte priG, out byte priB);
-        Color primary = Color.FromArgb(255, priR, priG, priB);
+        Windows.UI.Color primary = Windows.UI.Color.FromArgb(255, priR, priG, priB);
 
         // Glow background: deep dark tint derived from the dominant hue
         HslToRgb(topVibrant.H, Math.Min(topVibrant.S, 0.6), 0.08, out byte bgR, out byte bgG, out byte bgB);
-        Color glowBackground = Color.FromArgb(255, bgR, bgG, bgB);
+        Windows.UI.Color glowBackground = Windows.UI.Color.FromArgb(255, bgR, bgG, bgB);
 
         return new TypographyPalette(primary, accent, glowBackground);
     }
