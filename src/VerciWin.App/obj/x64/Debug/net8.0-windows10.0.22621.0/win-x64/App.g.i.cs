@@ -11,57 +11,35 @@
 
 namespace VerciWin.App
 {
+#if !DISABLE_XAML_GENERATED_MAIN
     /// <summary>
     /// Program class
     /// </summary>
-#if !DISABLE_XAML_GENERATED_MAIN
     public static class Program
-#else
-    internal static class XamlGeneratedProgram
-#endif
     {
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.UI.Xaml.Markup.Compiler"," 3.0.0.2608")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.UI.Xaml.Markup.Compiler"," 3.0.0.2411")]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-#if !DISABLE_XAML_GENERATED_MAIN
         [global::System.STAThreadAttribute]
         static void Main(string[] args)
-#else
-        internal static void XamlGeneratedMain()
-#endif
         {
             global::WinRT.ComWrappersSupport.InitializeComWrappers();
             global::Microsoft.UI.Xaml.Application.Start((p) => {
                 var context = new global::Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext(global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread());
                 global::System.Threading.SynchronizationContext.SetSynchronizationContext(context);
-#if !DISABLE_XAML_GENERATED_MAIN
                 new App();
-#else
-                App.XamlGeneratedCreateApplicationInstance();
-#endif
             });
         }
     }
+#endif
 
     partial class App : global::Microsoft.UI.Xaml.Application
     {
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.UI.Xaml.Markup.Compiler"," 3.0.0.2608")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.UI.Xaml.Markup.Compiler"," 3.0.0.2411")]
         private bool _contentLoaded;
-#if DISABLE_XAML_GENERATED_MAIN
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.UI.Xaml.Markup.Compiler"," 3.0.0.2608")]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        internal static void XamlGeneratedCreateApplicationInstance()
-        {
-            // Constructs the App to start the application. If this App has no parameterless 
-            // constructor, the call below does nothing and the application is responsible for 
-            // constructing the App itself from its own entry point.
-            _XamlGeneratedCreateApplicationInstance();
-        }
-        static partial void _XamlGeneratedCreateApplicationInstance();
-#endif
         /// <summary>
         /// InitializeComponent()
         /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.UI.Xaml.Markup.Compiler"," 3.0.0.2608")]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.UI.Xaml.Markup.Compiler"," 3.0.0.2411")]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         public void InitializeComponent()
         {

@@ -1,0 +1,16 @@
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\bin\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.deps.json
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\bin\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.dll
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\bin\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.pdb
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\bin\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.dll
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\bin\Debug\net8.0-windows10.0.22621.0\VerciWin.Core.pdb
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.csproj.AssemblyReference.cache
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.GeneratedMSBuildEditorConfig.editorconfig
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.AssemblyInfoInputs.cache
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.AssemblyInfo.cs
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.csproj.CoreCompileInputs.cache
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.sourcelink.json
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\VerciWin.622A7438.Up2Date
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.dll
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\refint\VerciWin.ViewModels.dll
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\VerciWin.ViewModels.pdb
+D:\Downloads\myCodes\projects\verci\src\VerciWin.ViewModels\obj\Debug\net8.0-windows10.0.22621.0\ref\VerciWin.ViewModels.dll

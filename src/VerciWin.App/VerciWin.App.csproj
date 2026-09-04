@@ -1,26 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+    <!-- <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants> -->
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <RootNamespace>VerciWin.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x64</Platforms>
+    
+    <!-- Override SDK defaults to prevent NETSDK1083/NETSDK1082 errors in .NET 8 -->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    
     <UseWinUI>true</UseWinUI>
     <!-- Disable MSIX packaging — unpackaged self-contained deployment -->
     <WindowsPackageType>None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-    <!--
-      Disable the auto-bootstrapper so we can call Bootstrap.Initialize()
-      manually in Program.cs before any WinUI types are instantiated.
-      This lets us show a friendly error if the runtime is missing.
-    -->
-    <WindowsAppSdkBootstrapInitialize>false</WindowsAppSdkBootstrapInitialize>
+    <!-- <WindowsAppSdkBootstrapInitialize>false</WindowsAppSdkBootstrapInitialize> -->
     <SelfContained>true</SelfContained>
+    
+    <!-- FIX: Restores PRI tooling tasks for dotnet CLI builds -->
+    <EnableMsixTooling>true</EnableMsixTooling>
+    
     <!-- Custom entry point: Program.cs calls Bootstrap.Initialize then Application.Start -->
-    <StartupObject>VerciWin.App.Program</StartupObject>
+    <!-- <StartupObject>VerciWin.App.Program</StartupObject> -->
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -32,7 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.241114003" />
     <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.3.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="H.NotifyIcon.WinUI" Version="2.2.0" />

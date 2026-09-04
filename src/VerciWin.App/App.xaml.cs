@@ -35,19 +35,10 @@ public partial class App : Application
     {
         this.InitializeComponent();
 
-        // 1. Single-Instance Guard
-        _singleInstanceMutex = new Mutex(true, "VerciWin_SingleInstance_Mutex_9A1F", out bool createdNew);
-        if (!createdNew)
-        {
-            Debug.WriteLine("[App] Another instance of VerciWin is already running. Exiting.");
-            Environment.Exit(0);
-            return;
-        }
-
-        // 2. Unhandled Exception Logging
+        // 1. Unhandled Exception Logging
         SetupGlobalExceptionLogging();
 
-        // 3. DI Container Setup
+        // 2. DI Container Setup
         ConfigureServices();
     }
 
@@ -111,21 +102,30 @@ public partial class App : Application
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        // 1. Single-Instance Guard (Moved here so XAML can initialize safely first)
+        _singleInstanceMutex = new Mutex(true, "VerciWin_SingleInstance_Mutex_9A1F", out bool createdNew);
+        if (!createdNew)
+        {
+            Debug.WriteLine("[App] Another instance of VerciWin is already running. Exiting.");
+            Environment.Exit(0);
+            return;
+        }
+
         if (_serviceProvider == null) return;
 
         var overlayViewModel = _serviceProvider.GetRequiredService<OverlayViewModel>();
         var trayViewModel = _serviceProvider.GetRequiredService<TrayMenuViewModel>();
         var mediaWatcher = _serviceProvider.GetRequiredService<MediaSessionWatcher>();
 
-        // 1. CREATE WINDOW SYNCHRONOUSLY FIRST (Fixes 0xc0000602 Crash)
+        // 2. CREATE WINDOW SYNCHRONOUSLY FIRST (Fixes 0xc0000602 Crash)
         _overlayWindow = new OverlayWindow(overlayViewModel, () => mediaWatcher.GetCurrentPosition());
         _overlayWindow.Activate();
 
-        // 2. Initialize System Tray
+        // 3. Initialize System Tray
         _trayIconManager = _serviceProvider.GetRequiredService<TrayIconManager>();
         _trayIconManager.Initialize();
 
-        // 3. Handle Tray menu events
+        // 4. Handle Tray menu events
         trayViewModel.OpenSettingsRequested += (s, e) =>
         {
             if (_settingsWindow == null)
@@ -142,7 +142,7 @@ public partial class App : Application
             ExitApplication();
         };
 
-        // 4. Kick off async initialization in the background
+        // 5. Kick off async initialization in the background
         _ = InitializeAsync();
     }
 
