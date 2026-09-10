@@ -115,7 +115,13 @@ public sealed class LyricCanvasRenderer : IDisposable
             DrawAmbientBackdrop(ds, width, height, palette, masterOpacity);
         }
 
-        // 2. State-dependent rendering
+        // 2. Interactive repositioning guide (when unlocked)
+        if (!_viewModel.IsOverlayMode)
+        {
+            DrawInteractiveModeGuide(ds, width, height, palette, masterOpacity);
+        }
+
+        // 3. State-dependent rendering
         if (state.IsEmpty)
         {
             DrawEmptyState(ds, width, height, palette, masterOpacity);
@@ -129,7 +135,7 @@ public sealed class LyricCanvasRenderer : IDisposable
             return;
         }
 
-        // 3. Active lyrics rendering
+        // 4. Active lyrics rendering
         TimeSpan now = _positionProvider();
         DrawLyrics(ds, sender, width, height, lyrics, now, palette, isGlowStyle, masterOpacity);
     }
@@ -421,6 +427,26 @@ public sealed class LyricCanvasRenderer : IDisposable
             ds.DrawTextLayout(layout, x, y - 30f - offset, tint);
             ds.DrawTextLayout(layout, x, y - 30f + offset, tint);
         }
+    }
+
+    private void DrawInteractiveModeGuide(
+        CanvasDrawingSession ds,
+        float width,
+        float height,
+        TypographyPalette palette,
+        double opacity)
+    {
+        // 1. Subtle translucent glass border around the draggable window bounds
+        var strokeColor = Color.FromArgb((byte)(160 * opacity), palette.Accent.R, palette.Accent.G, palette.Accent.B);
+        var fillColor = Color.FromArgb((byte)(24 * opacity), palette.GlowBackground.R, palette.GlowBackground.G, palette.GlowBackground.B);
+
+        ds.FillRoundedRectangle(4, 4, width - 8, height - 8, 12, 12, fillColor);
+        ds.DrawRoundedRectangle(4, 4, width - 8, height - 8, 12, 12, strokeColor, 2f);
+
+        // 2. Repositioning helper tag at top center
+        string hintText = "⤧ Interactive Mode — Drag anywhere to reposition • Right-click tray to lock";
+        var tagColor = Color.FromArgb((byte)(220 * opacity), palette.Accent.R, palette.Accent.G, palette.Accent.B);
+        ds.DrawText(hintText, width * 0.5f, 22f, tagColor, _statusSubFormat!);
     }
 
     public void Dispose()

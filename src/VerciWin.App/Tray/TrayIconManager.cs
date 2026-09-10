@@ -23,7 +23,8 @@ public sealed class TrayIconManager : IDisposable
     {
         _taskbarIcon = new TaskbarIcon
         {
-            ToolTipText = _viewModel.TooltipText
+            ToolTipText = _viewModel.TooltipText,
+            LeftClickCommand = _viewModel.ToggleOverlayModeCommand
         };
 
         // Try loading icon from Assets/TrayIcon.ico
@@ -43,21 +44,28 @@ public sealed class TrayIconManager : IDisposable
         // Build native XAML Context Menu
         var contextMenu = new MenuFlyout();
 
-        // 1. Toggle Mode
+        // 1. Toggle Mode (Unlock to Drag / Lock Overlay)
         var toggleModeItem = new MenuFlyoutItem
         {
-            Text = _viewModel.IsOverlayMode ? "Switch to Normal Window" : "Switch to Overlay Mode"
+            Text = GetToggleModeText(_viewModel.IsOverlayMode)
         };
         toggleModeItem.Click += async (s, e) =>
         {
             await _viewModel.ToggleOverlayModeAsync();
-            toggleModeItem.Text = _viewModel.IsOverlayMode ? "Switch to Normal Window" : "Switch to Overlay Mode";
+            toggleModeItem.Text = GetToggleModeText(_viewModel.IsOverlayMode);
         };
         contextMenu.Items.Add(toggleModeItem);
 
+        // 2. Position Presets Submenu
+        var positionSubMenu = new MenuFlyoutSubItem { Text = "Position Presets" };
+        AddPositionOption(positionSubMenu, "Lower Third (Bottom 30%)", "LowerThird");
+        AddPositionOption(positionSubMenu, "Center Screen", "Center");
+        AddPositionOption(positionSubMenu, "Full Screen", "FullScreen");
+        contextMenu.Items.Add(positionSubMenu);
+
         contextMenu.Items.Add(new MenuFlyoutSeparator());
 
-        // 2. Opacity Submenu
+        // 3. Opacity Submenu
         var opacitySubMenu = new MenuFlyoutSubItem { Text = "Opacity" };
         AddOpacityOption(opacitySubMenu, "25%", 0.25);
         AddOpacityOption(opacitySubMenu, "50%", 0.50);
@@ -65,7 +73,7 @@ public sealed class TrayIconManager : IDisposable
         AddOpacityOption(opacitySubMenu, "100%", 1.00);
         contextMenu.Items.Add(opacitySubMenu);
 
-        // 3. Visual Style Submenu
+        // 4. Visual Style Submenu
         var styleSubMenu = new MenuFlyoutSubItem { Text = "Visual Style" };
         var glowStyle = new MenuFlyoutItem { Text = "Glow (Vibrant Glass)" };
         glowStyle.Click += async (s, e) => await _viewModel.SetStyleAsync("Glow");
@@ -77,23 +85,17 @@ public sealed class TrayIconManager : IDisposable
 
         contextMenu.Items.Add(new MenuFlyoutSeparator());
 
-        // 4. Settings
+        // 5. Settings
         var settingsItem = new MenuFlyoutItem { Text = "Settings..." };
         settingsItem.Click += (s, e) => _viewModel.OpenSettings();
         contextMenu.Items.Add(settingsItem);
 
-        // 5. Exit
+        // 6. Exit
         var exitItem = new MenuFlyoutItem { Text = "Exit VerciWin" };
         exitItem.Click += (s, e) => _viewModel.Exit();
         contextMenu.Items.Add(exitItem);
 
         _taskbarIcon.ContextFlyout = contextMenu;
-
-        // Double click to toggle settings
-        // _taskbarIcon.LeftClick += (s, e) =>
-        // {
-        //     // Left click can open settings or toggle mode
-        // };
 
         _viewModel.PropertyChanged += (s, e) =>
         {
@@ -103,11 +105,23 @@ public sealed class TrayIconManager : IDisposable
             }
             else if (e.PropertyName == nameof(TrayMenuViewModel.IsOverlayMode))
             {
-                toggleModeItem.Text = _viewModel.IsOverlayMode ? "Switch to Normal Window" : "Switch to Overlay Mode";
+                toggleModeItem.Text = GetToggleModeText(_viewModel.IsOverlayMode);
             }
         };
 
         _taskbarIcon.ForceCreate();
+    }
+
+    private static string GetToggleModeText(bool isOverlayMode)
+    {
+        return isOverlayMode ? "🔓 Unlock Position (Drag to Move)" : "🔒 Lock Overlay (Click-Through Mode)";
+    }
+
+    private void AddPositionOption(MenuFlyoutSubItem menu, string label, string position)
+    {
+        var item = new MenuFlyoutItem { Text = label };
+        item.Click += async (s, e) => await _viewModel.SetPositionPresetAsync(position);
+        menu.Items.Add(item);
     }
 
     private void AddOpacityOption(MenuFlyoutSubItem menu, string label, double opacity)

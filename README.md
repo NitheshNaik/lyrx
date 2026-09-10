@@ -1,44 +1,68 @@
-# VerciWin
+<div align="center">
 
-**VerciWin** is a Windows-native, system-tray-resident, always-on-top, click-through kinetic typography overlay that syncs animated lyrics word-by-word to whatever audio is currently playing on Windows (Spotify, YouTube in Chrome/Edge, Apple Music, Tidal, etc.).
+<h1>lyrx</h1>
 
-Visually inspired by the macOS app **Verci**, built from scratch using Windows-idiomatic APIs: **GSMTC** (Global System Media Transport Controls), **WinUI 3** (Windows App SDK), and **Win2D** (`Microsoft.Graphics.Win2D`).
+<p><strong>Transparent, GPU-accelerated kinetic typography lyrics, always on top, never in the way.</strong><br/>
+System-wide lyric sync for Spotify, YouTube, and Apple Music on Windows.</p>
+
+<br/>
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet?style=flat-square)](./LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-0078D4?style=flat-square&logo=windows&logoColor=white)](https://www.microsoft.com/windows)
+
+</div>
 
 ---
 
-## Key Features
+<div align="center">
 
-- **Kinetic Typography:** Word-by-word animated highlights, cubic ease-out scaling, and focal-zone vertical line sliding.
-- **Glass & Glow Aesthetics:** Per-word outer glow, dynamic ambient backdrop gradients tinted by the active track's album art using median-cut palette extraction with saturation weighting.
-- **Click-Through Transparency:** Uses Win32 extended window styles (`WS_EX_NOREDIRECTIONBITMAP | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW`) and DWM frame extension for true hardware-accelerated click-through overlay without black window artifacts.
-- **System-Wide Audio Sync:** Hooks into Windows GSMTC session manager to automatically capture playback state, title, artist, album art, and timeline properties across any media player.
-- **Sub-Frame Smoothness (60 FPS):** Extrapolates playback position using a local stopwatch clock between 5 Hz GSMTC drift-correction polls; renders with Win2D at 60 Hz and pauses when music stops.
-- **Cache-First Lyric Pipeline:** Integrated with the LRCLIB public API, cached locally to `%AppData%/VerciWin/lyrics/` as JSON, with character-weighted proportional word-timing interpolation for standard line-level LRC files.
-- **Power Management:** Automatically engages `SetThreadExecutionState` during active playback to prevent unwanted display sleep, and safely releases it on pause or exit.
-- **System Tray Resident:** Context menu for instant opacity changes (25/50/75/100%), visual style switching (Glow vs Minimal), mode toggling (Overlay vs Normal Draggable Window), and dedicated settings dialog.
+## Built With
+
+[![.NET 8](https://img.shields.io/badge/.NET%208-512BD4?style=flat-square&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![C#](https://img.shields.io/badge/C%23-239120?style=flat-square&logo=csharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
+[![Windows App SDK](https://img.shields.io/badge/Windows%20App%20SDK-0078D4?style=flat-square&logo=windows&logoColor=white)](https://learn.microsoft.com/windows/apps/windows-app-sdk/)
+[![WinUI 3](https://img.shields.io/badge/WinUI%203-0063B1?style=flat-square&logo=microsoft&logoColor=white)](https://learn.microsoft.com/windows/apps/winui/winui3/)
+[![Win2D](https://img.shields.io/badge/Win2D-00BCF2?style=flat-square&logo=microsoft&logoColor=white)](https://github.com/microsoft/Win2D)
+[![CommunityToolkit.Mvvm](https://img.shields.io/badge/CommunityToolkit.Mvvm-9B59B6?style=flat-square&logo=nuget&logoColor=white)](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/)
+[![LRCLIB](https://img.shields.io/badge/LRCLIB%20API-FF6B6B?style=flat-square&logo=musicbrainz&logoColor=white)](https://lrclib.net/)
+
+</div>
+
+---
+
+## Features
+
+- **Kinetic Typography** — Word-by-word animated highlights with cubic ease-out scaling and a focal-zone vertical sliding line.
+- **Glass & Glow Aesthetics** — Per-word outer glow and dynamic ambient backdrop gradients, tinted in real-time by album art via **median-cut palette extraction** with saturation weighting.
+- **Click-Through Transparency** — Uses Win32 extended window styles (`WS_EX_NOREDIRECTIONBITMAP | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW`) and DWM frame extension for true hardware-accelerated click-through with zero black-window artifacts.
+- **System-Wide Audio Sync** — Hooks into the **Windows GSMTC** session manager to automatically capture playback state, title, artist, album art, and timeline properties across any media player.
+- **Sub-Frame Smoothness (60 FPS)** — Extrapolates playback position using a local stopwatch clock between 5 Hz GSMTC drift-correction polls; renders via Win2D at 60 Hz and pauses gracefully when music stops.
+- **Cache-First Lyric Pipeline** — Integrated with the **LRCLIB** public API; lyrics are cached locally to `%AppData%/VerciWin/lyrics/` as JSON, with character-weighted proportional word-timing interpolation for standard line-level LRC files.
+- **Power Management** — Automatically engages `SetThreadExecutionState` during active playback to prevent unwanted display sleep, and safely releases it on pause or exit.
+- **System Tray Resident** — Context menu for instant **opacity changes** (25/50/75/100%), **visual style switching** (Glow vs Minimal), **mode toggling** (Overlay vs Normal Draggable Window), and a dedicated settings dialog.
 
 ---
 
 ## Architecture
 
 ```
-VerciWin/
+lyrx/
 ├── VerciWin.sln
 ├── src/
 │   ├── VerciWin.App/                     # WinUI 3 unpackaged host application (win-x64)
-│   │   ├── Program.cs                    # Explicit Bootstrapper (Bootstrap.Initialize)
-│   │   ├── App.xaml / App.xaml.cs        # Single-instance mutex, DI container bootstrap, event wiring
+│   │   ├── Program.cs                    # Explicit bootstrapper (Bootstrap.Initialize)
+│   │   ├── App.xaml / App.xaml.cs        # Single-instance mutex, DI container, event wiring
 │   │   ├── OverlayWindow.xaml/.cs        # Transparent click-through Win2D canvas window
 │   │   ├── SettingsWindow.xaml/.cs       # Settings configuration UI
 │   │   ├── Interop/
-│   │   │   ├── Win32Interop.cs           # P/Invoke signatures (SetWindowLongPtr, DwmExtendFrame, etc.)
+│   │   │   ├── Win32Interop.cs           # P/Invoke signatures (SetWindowLongPtr, DwmExtendFrame…)
 │   │   │   └── ExtendedWindowStyles.cs   # Win32 style constants
 │   │   ├── Tray/
 │   │   │   └── TrayIconManager.cs        # H.NotifyIcon system tray manager
 │   │   └── Rendering/
 │   │       ├── LyricCanvasRenderer.cs    # Win2D kinetic typography & glow draw loop
 │   │       └── RenderLoop.cs             # 60 Hz DispatcherQueueTimer render loop
-│   ├── VerciWin.Core/                    # Pure platform-agnostic business logic (no XAML/WinUI)
+│   ├── VerciWin.Core/                    # Pure, platform-agnostic business logic (no XAML/WinUI)
 │   │   ├── Media/
 │   │   │   ├── MediaSessionWatcher.cs    # GSMTC wrapper with position extrapolation & scrub detection
 │   │   │   └── PlaybackState.cs          # Immutable playback state model
@@ -47,8 +71,7 @@ VerciWin/
 │   │   │   ├── LrcLibProvider.cs         # LRCLIB API client with User-Agent & Retry-After handling
 │   │   │   ├── LyricService.cs           # Cache-first orchestrator
 │   │   │   ├── LrcParser.cs              # Standard & A2 word-level LRC parser
-│   │   │   ├── WordTimingInterpolator.cs # Proportional word-length duration distributor
-│   │   │   └── Models/                   # LyricLine, LyricWord, LyricDocument
+│   │   │   └── WordTimingInterpolator.cs # Proportional word-length duration distributor
 │   │   ├── Color/
 │   │   │   ├── PaletteExtractor.cs       # Median-cut color quantizer with saturation scoring
 │   │   │   └── TypographyPalette.cs      # Palette model & NeutralPalette fallback
@@ -59,10 +82,10 @@ VerciWin/
 │   │   │   └── SettingsStore.cs          # %AppData%/VerciWin/settings.json store
 │   │   └── Caching/
 │   │       └── LyricCacheStore.cs        # %AppData%/VerciWin/lyrics/ cache store
-│   ├── VerciWin.ViewModels/              # MVVM ViewModels
-│   │   ├── OverlayViewModel.cs
-│   │   ├── SettingsViewModel.cs
-│   │   └── TrayMenuViewModel.cs
+│   └── VerciWin.ViewModels/              # MVVM ViewModels (CommunityToolkit.Mvvm)
+│       ├── OverlayViewModel.cs
+│       ├── SettingsViewModel.cs
+│       └── TrayMenuViewModel.cs
 └── tests/
     └── VerciWin.Core.Tests/              # xUnit tests for Parser, Interpolator, and Cache
 ```
@@ -71,52 +94,53 @@ VerciWin/
 
 ## Prerequisites
 
-- **OS:** Windows 10 (version 1809+, build 17763) or Windows 11 (build 22000+)
-- **SDK:** [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or higher
-- **Runtime:** [Windows App SDK 2.4+ Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) (packaged automatically in self-contained publish)
+| Requirement | Detail |
+|---|---|
+| **OS** | Windows 10 (build 17763+) or Windows 11 (build 22000+) |
+| **SDK** | [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or higher |
+| **Runtime** | [Windows App SDK 1.6+](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) *(bundled in self-contained publish)* |
 
 ---
 
 ## Build & Run
 
-### 1. Build the Solution
+### 1. Clone & Build
+
+```bash
+git clone https://github.com/NitheshNaik/lyrx.git
+cd lyrx
+```
+
 ```powershell
 dotnet build VerciWin.sln
 ```
 
 ### 2. Run Unit Tests
+
 ```powershell
 dotnet test tests/VerciWin.Core.Tests/VerciWin.Core.Tests.csproj
 ```
 
-### 3. Publish Unpackaged Self-Contained Single Exe
-```powershell
-dotnet publish src/VerciWin.App/VerciWin.App.csproj -c Release -r win-x64 --self-contained
-```
-The published binary and assets will be located in:
-`src/VerciWin.App/bin/Release/net8.0-windows10.0.22621.0/win-x64/publish/`
+### 3. Publish — Unpackaged Self-Contained Single Exe
 
-### 4. Run VerciWin
 ```powershell
-.\src\VerciWin.App\bin\Release\net8.0-windows10.0.22621.0/win-x64/publish/VerciWin.App.exe
+dotnet publish src/VerciWin.App/VerciWin.App.csproj `
+    -c Release -r win-x64 --self-contained
+```
+
+> The published binary and assets will be output to:
+> `src/VerciWin.App/bin/Release/net8.0-windows10.0.22621.0/win-x64/publish/`
+
+### 4. Launch
+
+```powershell
+.\src\VerciWin.App\bin\Release\net8.0-windows10.0.22621.0\win-x64\publish\VerciWin.App.exe
 ```
 
 ---
 
-## Manual Verification Checklist
+<div align="center">
 
-1. **Click-Through Transparency:** Open Notepad or browser behind the overlay and click anywhere in the lyric area — clicks pass through directly to the underlying window.
-2. **No Taskbar Presence:** The app runs silently in the system tray; no window icon appears in the Windows Taskbar or Alt+Tab switcher (`WS_EX_TOOLWINDOW`).
-3. **Tray Menu Controls:** Right-click the VerciWin icon in the system tray to adjust opacity, toggle between "Glow" and "Minimal" styles, switch window modes, or open Settings.
-4. **Always-on-Top:** The overlay remains pinned on top of full-screen and maximized windows while in Overlay Mode (`HWND_TOPMOST`).
-5. **Normal Window Mode:** Selecting "Switch to Normal Window" makes the window interactable and repositionable.
-6. **Per-Monitor DPI Awareness:** When moving across monitors with different scaling factors (e.g., 100% vs 150%), the overlay dynamically recalculates its physical pixel rectangle.
-7. **GSMTC Audio Detection:** Start audio in Spotify, YouTube, or Apple Music — track metadata and album art appear within seconds.
-8. **Kinetic Typography Sync:** Lyrics highlight word-by-word with cubic ease-out scaling and vibrant accents matching the album artwork.
-9. **Session Handoff:** Switching from Spotify to a YouTube video in Chrome cleanly transitions to the new media session without crashes.
-10. **Single-Instance Guard:** Attempting to launch a second instance of `VerciWin.App.exe` exits cleanly without spawning multiple overlays.
+Made by **[Nithesh](https://github.com/NitheshNaik)**
 
----
-
-## License
-MIT License.
+</div>

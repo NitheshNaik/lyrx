@@ -15,7 +15,7 @@ using NativeWin32 = VerciWin.App.Interop.Win32Interop;
 namespace VerciWin.App;
 
 /// <summary>
-/// Always-on-top, click-through kinetic typography overlay window backed by Win2D.
+/// Always-on-top, kinetic typography overlay window backed by Win2D with toggleable click-through/interactive modes.
 /// </summary>
 public sealed partial class OverlayWindow : Window
 {
@@ -82,17 +82,9 @@ public sealed partial class OverlayWindow : Window
                 presenter.IsMaximizable = false;
                 presenter.SetBorderAndTitleBar(hasBorder: false, hasTitleBar: false);
             }
-
-            _appWindow.Changed += (s, e) =>
-            {
-                if (e.DidSizeChange || e.DidPositionChange)
-                {
-                    PositionOverlayWindow();
-                }
-            };
         }
 
-        // Subclass window for WM_NCHITTEST click-through filtering
+        // Subclass window for WM_NCHITTEST click-through / caption drag filtering
         _subclassProc = new NativeWin32.SubclassProc(WindowSubclassProc);
         _isSubclassed = NativeWin32.SetWindowSubclass(_hwnd, _subclassProc, 1, 0);
 
@@ -149,10 +141,10 @@ public sealed partial class OverlayWindow : Window
 
         NativeWin32.SetWindowLongPtr(_hwnd, ExtendedWindowStyles.GWL_EXSTYLE, exStyle);
 
-        // Place below topmost windows
+        // Keep on top while interacting/dragging
         NativeWin32.SetWindowPos(
             _hwnd,
-            ExtendedWindowStyles.HWND_NOTOPMOST,
+            ExtendedWindowStyles.HWND_TOPMOST,
             0, 0, 0, 0,
             ExtendedWindowStyles.SWP_NOMOVE | ExtendedWindowStyles.SWP_NOSIZE | ExtendedWindowStyles.SWP_SHOWWINDOW);
     }
@@ -211,6 +203,9 @@ public sealed partial class OverlayWindow : Window
             {
                 return ExtendedWindowStyles.HTTRANSPARENT;
             }
+
+            // In interactive mode, return HTCAPTION so clicking and dragging anywhere moves the window
+            return ExtendedWindowStyles.HTCAPTION;
         }
         else if (uMsg == ExtendedWindowStyles.WM_DPICHANGED || uMsg == ExtendedWindowStyles.WM_DISPLAYCHANGE)
         {

@@ -98,6 +98,13 @@ public partial class TrayMenuViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public async Task SetPositionPresetAsync(string position)
+    {
+        _overlayViewModel.OverlayPosition = position;
+        await PersistSettingsAsync();
+    }
+
+    [RelayCommand]
     public void OpenSettings()
     {
         OpenSettingsRequested?.Invoke(this, EventArgs.Empty);

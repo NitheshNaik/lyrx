@@ -59,7 +59,7 @@ public sealed class WordTimingInterpolator
             return Array.Empty<LyricWord>();
 
         var tokens = lineText.Split(
-            ' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            (char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         if (tokens.Length == 0)
             return Array.Empty<LyricWord>();

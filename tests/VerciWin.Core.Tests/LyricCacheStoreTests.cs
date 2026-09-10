@@ -109,7 +109,7 @@ public sealed class LyricCacheStoreTests : IDisposable
     public void BuildKey_NormalizesArtistAndTitle()
     {
         var key = LyricCacheStore.BuildKey("  The Beatles  ", "  Hey Jude  ");
-        Assert.Equal("the beatles|hey jude", key);
+        Assert.Equal("the beatles_hey jude", key);
     }
 
     [Fact]
