@@ -1,4 +1,4 @@
-<div align="center">
+﻿<div align="center">
 
 <h1>lyrx</h1>
 
@@ -37,7 +37,7 @@ System-wide lyric sync for Spotify, YouTube, and Apple Music on Windows.</p>
 - **Click-Through Transparency** — Uses Win32 extended window styles (`WS_EX_NOREDIRECTIONBITMAP | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW`) and DWM frame extension for true hardware-accelerated click-through with zero black-window artifacts.
 - **System-Wide Audio Sync** — Hooks into the **Windows GSMTC** session manager to automatically capture playback state, title, artist, album art, and timeline properties across any media player.
 - **Sub-Frame Smoothness (60 FPS)** — Extrapolates playback position using a local stopwatch clock between 5 Hz GSMTC drift-correction polls; renders via Win2D at 60 Hz and pauses gracefully when music stops.
-- **Cache-First Lyric Pipeline** — Integrated with the **LRCLIB** public API; lyrics are cached locally to `%AppData%/VerciWin/lyrics/` as JSON, with character-weighted proportional word-timing interpolation for standard line-level LRC files.
+- **Cache-First Lyric Pipeline** — Integrated with the **LRCLIB** public API; lyrics are cached locally to `%AppData%/Lyrx/lyrics/` as JSON, with character-weighted proportional word-timing interpolation for standard line-level LRC files.
 - **Power Management** — Automatically engages `SetThreadExecutionState` during active playback to prevent unwanted display sleep, and safely releases it on pause or exit.
 - **System Tray Resident** — Context menu for instant **opacity changes** (25/50/75/100%), **visual style switching** (Glow vs Minimal), **mode toggling** (Overlay vs Normal Draggable Window), and a dedicated settings dialog.
 
@@ -47,9 +47,9 @@ System-wide lyric sync for Spotify, YouTube, and Apple Music on Windows.</p>
 
 ```
 lyrx/
-├── VerciWin.sln
+├── Lyrx.sln
 ├── src/
-│   ├── VerciWin.App/                     # WinUI 3 unpackaged host application (win-x64)
+│   ├── Lyrx.App/                     # WinUI 3 unpackaged host application (win-x64)
 │   │   ├── Program.cs                    # Explicit bootstrapper (Bootstrap.Initialize)
 │   │   ├── App.xaml / App.xaml.cs        # Single-instance mutex, DI container, event wiring
 │   │   ├── OverlayWindow.xaml/.cs        # Transparent click-through Win2D canvas window
@@ -62,7 +62,7 @@ lyrx/
 │   │   └── Rendering/
 │   │       ├── LyricCanvasRenderer.cs    # Win2D kinetic typography & glow draw loop
 │   │       └── RenderLoop.cs             # 60 Hz DispatcherQueueTimer render loop
-│   ├── VerciWin.Core/                    # Pure, platform-agnostic business logic (no XAML/WinUI)
+│   ├── Lyrx.Core/                    # Pure, platform-agnostic business logic (no XAML/WinUI)
 │   │   ├── Media/
 │   │   │   ├── MediaSessionWatcher.cs    # GSMTC wrapper with position extrapolation & scrub detection
 │   │   │   └── PlaybackState.cs          # Immutable playback state model
@@ -79,15 +79,15 @@ lyrx/
 │   │   │   └── ExecutionStateManager.cs  # SetThreadExecutionState power management
 │   │   ├── Settings/
 │   │   │   ├── AppSettings.cs            # Settings model
-│   │   │   └── SettingsStore.cs          # %AppData%/VerciWin/settings.json store
+│   │   │   └── SettingsStore.cs          # %AppData%/Lyrx/settings.json store
 │   │   └── Caching/
-│   │       └── LyricCacheStore.cs        # %AppData%/VerciWin/lyrics/ cache store
-│   └── VerciWin.ViewModels/              # MVVM ViewModels (CommunityToolkit.Mvvm)
+│   │       └── LyricCacheStore.cs        # %AppData%/Lyrx/lyrics/ cache store
+│   └── Lyrx.ViewModels/              # MVVM ViewModels (CommunityToolkit.Mvvm)
 │       ├── OverlayViewModel.cs
 │       ├── SettingsViewModel.cs
 │       └── TrayMenuViewModel.cs
 └── tests/
-    └── VerciWin.Core.Tests/              # xUnit tests for Parser, Interpolator, and Cache
+    └── Lyrx.Core.Tests/              # xUnit tests for Parser, Interpolator, and Cache
 ```
 
 ---
@@ -112,29 +112,29 @@ cd lyrx
 ```
 
 ```powershell
-dotnet build VerciWin.sln
+dotnet build Lyrx.sln
 ```
 
 ### 2. Run Unit Tests
 
 ```powershell
-dotnet test tests/VerciWin.Core.Tests/VerciWin.Core.Tests.csproj
+dotnet test tests/Lyrx.Core.Tests/Lyrx.Core.Tests.csproj
 ```
 
 ### 3. Publish — Unpackaged Self-Contained Single Exe
 
 ```powershell
-dotnet publish src/VerciWin.App/VerciWin.App.csproj `
+dotnet publish src/Lyrx.App/Lyrx.App.csproj `
     -c Release -r win-x64 --self-contained
 ```
 
 > The published binary and assets will be output to:
-> `src/VerciWin.App/bin/Release/net8.0-windows10.0.22621.0/win-x64/publish/`
+> `src/Lyrx.App/bin/Release/net8.0-windows10.0.22621.0/win-x64/publish/`
 
 ### 4. Launch
 
 ```powershell
-.\src\VerciWin.App\bin\Release\net8.0-windows10.0.22621.0\win-x64\publish\VerciWin.App.exe
+.\src\Lyrx.App\bin\Release\net8.0-windows10.0.22621.0\win-x64\publish\Lyrx.App.exe
 ```
 
 ---

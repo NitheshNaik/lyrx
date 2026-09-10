@@ -1,0 +1,16 @@
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\bin\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.deps.json
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\bin\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.dll
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\bin\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.pdb
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\bin\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.Core.dll
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\bin\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.Core.pdb
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.csproj.AssemblyReference.cache
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.GeneratedMSBuildEditorConfig.editorconfig
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.AssemblyInfoInputs.cache
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.AssemblyInfo.cs
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.csproj.CoreCompileInputs.cache
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.sourcelink.json
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.Vie.0ACDF190.Up2Date
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.dll
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\refint\Lyrx.ViewModels.dll
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\Lyrx.ViewModels.pdb
+D:\Downloads\myCodes\projects\verci\src\Lyrx.ViewModels\obj\x64\Debug\net8.0-windows10.0.22621.0\ref\Lyrx.ViewModels.dll

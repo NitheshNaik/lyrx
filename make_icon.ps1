@@ -1,6 +1,6 @@
-Add-Type -AssemblyName System.Drawing
+﻿Add-Type -AssemblyName System.Drawing
 
-$dir = "d:\Downloads\myCodes\projects\verci\src\VerciWin.App\Assets"
+$dir = "d:\Downloads\myCodes\projects\lyrx\src\Lyrx.App\Assets"
 if (!(Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force }
 $icoPath = Join-Path $dir "TrayIcon.ico"
 
